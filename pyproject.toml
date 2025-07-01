@@ -5,7 +5,7 @@ description = ""
 authors = [{ name = "Gustavo Oliveira", email = "gusta01.oliveira@gmail.com" }]
 readme = "README.md"
 requires-python = ">=3.13,<3.14"
-dependencies = []
+dependencies = ["django (>=5.2.3,<6.0.0)", "python-decouple (>=3.8,<4.0)", "mysqlclient (>=2.2.7,<3.0.0)"]
 
 
 [build-system]
