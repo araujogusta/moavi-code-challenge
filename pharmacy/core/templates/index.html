@@ -1,0 +1,37 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="app">
+    <div class="mt-6">
+        <button class="flex items-center justify-center gap-3 bg-slate-700 text-white px-4 py-2 rounded-md ml-auto"
+            @click="openFileInput">
+            <i class="fa-solid fa-plus"></i>
+            <p>Adicionar arquivo</p>
+        </button>
+        <input type="file" class="hidden" @input="uploadNewFile" ref="uploadFilesInput">
+    </div>
+
+    <div class="relative overflow-x-auto max-h-[768px] mt-6">
+        <table class="w-full text-left">
+            <thead class="uppercase text-sm bg-slate-700 text-white sticky top-0 z-10">
+                <th class="px-4 py-2">Arquivo</th>
+                <th class="px-4 py-2">Qtd. Marcações</th>
+                <th class="px-4 py-2">Data de Upload</th>
+            </thead>
+            <tbody>
+                <tr v-for="mi in markingsImports" class="odd:bg-slate-100 even:bg-slate-200">
+                    <td class="px-4 py-2">${ mi.filename }</td>
+                    <td class="px-4 py-2">${ mi.markings_count }</td>
+                    <td class="px-4 py-2">${ formatDateTimeString(mi.uploaded_at) }</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="{% static 'js/index.js' %}"></script>
+{% endblock js %}
