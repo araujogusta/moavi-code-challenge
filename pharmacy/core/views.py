@@ -11,6 +11,10 @@ def root(request: HttpRequest) -> HttpResponse:
     return render(request, "index.html")
 
 
+def markings(request: HttpRequest) -> HttpResponse:
+    return render(request, "markings.html")
+
+
 def upload_csv_file(request: HttpRequest) -> JsonResponse:
     if request.method != "POST":
         return JsonResponse(
@@ -58,5 +62,13 @@ def get_markings_import(request: HttpRequest) -> JsonResponse:
     markings_imports = MarkingImport.objects.all().order_by("-id")
     return JsonResponse(
         {"markings_imports": [mi.to_dict() for mi in markings_imports]},
+        status=HTTPStatus.OK,
+    )
+
+
+def get_markings(request: HttpRequest) -> JsonResponse:
+    markings = Marking.objects.all().order_by("-date", "-hour")
+    return JsonResponse(
+        {"markings": [m.to_dict() for m in markings]},
         status=HTTPStatus.OK,
     )
