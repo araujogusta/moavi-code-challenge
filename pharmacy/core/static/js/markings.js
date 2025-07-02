@@ -31,6 +31,9 @@ const app = createApp({
             if (atBottom) {
                 this.loadMore()
             }
+        },
+        formatDateString(dateString) {
+            return new Date(dateString).toLocaleDateString('pt-BR')
         }
     },
     mounted() {
