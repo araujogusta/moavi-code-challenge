@@ -3,6 +3,7 @@ from collections import defaultdict
 from datetime import datetime, timedelta
 from http import HTTPStatus
 
+from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 
@@ -74,8 +75,12 @@ def get_markings_import(request: HttpRequest) -> JsonResponse:
 
 def get_markings(request: HttpRequest) -> JsonResponse:
     markings = Marking.objects.all().order_by("-date", "-hour")
+    paginator = Paginator(markings, 50)
+
+    page_number = request.GET.get("page")
+    page = paginator.get_page(page_number)
     return JsonResponse(
-        {"markings": [m.to_dict() for m in markings]},
+        {"markings": [m.to_dict() for m in page], "has_next": page.has_next()},
         status=HTTPStatus.OK,
     )
 
