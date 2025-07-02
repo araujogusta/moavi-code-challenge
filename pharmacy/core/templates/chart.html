@@ -1,0 +1,20 @@
+{% extends "partials/base.html" %}
+{% load static %}
+
+{% block content %}
+<div id="app">
+    <div class="flex flex-col space-y-2 max-w-xs my-6 ml-auto">
+        <label for="date" class="text-sm font-medium text-gray-700">Selecione a data</label>
+        <input type="date" id="date" name="date"
+            class="block w-full rounded-xl border border-gray-300 px-4 py-2 text-sm text-gray-700 shadow-sm placeholder-gray-400 focus:border-blue-500 focus:ring focus:ring-blue-200 focus:ring-opacity-50 transition"
+            @input="inputNewDate" />
+    </div>
+
+    <canvas id="chart"></canvas>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="{% static 'js/chart.js' %}"></script>
+{% endblock js %}
