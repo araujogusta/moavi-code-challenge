@@ -1,13 +1,13 @@
-from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
 from http import HTTPStatus
 
-from django.core.paginator import Paginator
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 
-from pharmacy.core.models import Marking, MarkingImport
+from pharmacy.core.models import MarkingImport
+from pharmacy.core.services.chart_data import compute_interval_presence
 from pharmacy.core.services.csv_importer import import_markings_from_csv
+from pharmacy.core.services.marking_listing import get_paginated_markings
 
 
 def root(request: HttpRequest) -> HttpResponse:
@@ -50,13 +50,11 @@ def get_markings_import(request: HttpRequest) -> JsonResponse:
 
 
 def get_markings(request: HttpRequest) -> JsonResponse:
-    markings = Marking.objects.all().order_by('-date', '-hour')
-    paginator = Paginator(markings, 50)
-
     page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
+    markings, has_next = get_paginated_markings(page_number)
+
     return JsonResponse(
-        {'markings': [m.to_dict() for m in page], 'has_next': page.has_next()},
+        {'markings': [m.to_dict() for m in markings], 'has_next': has_next},
         status=HTTPStatus.OK,
     )
 
