@@ -1,4 +1,3 @@
-import csv
 from collections import defaultdict
 from datetime import datetime, timedelta
 from http import HTTPStatus
@@ -8,6 +7,7 @@ from django.http import HttpRequest, HttpResponse, JsonResponse
 from django.shortcuts import render
 
 from pharmacy.core.models import Marking, MarkingImport
+from pharmacy.core.services.csv_importer import import_markings_from_csv
 
 
 def root(request: HttpRequest) -> HttpResponse:
@@ -33,26 +33,10 @@ def upload_csv_file(request: HttpRequest) -> JsonResponse:
     if not file.name.endswith('.csv'):
         return JsonResponse({'error': 'Only CSV files are allowed'}, status=HTTPStatus.BAD_REQUEST)
 
-    raw_file_content = file.read().decode('utf-8')
-    reader = csv.reader(raw_file_content.splitlines(), delimiter=';')
-    file_content = list(reader)
-
-    markings_import = MarkingImport(filename=file.name, markings_count=0)
-
-    markings = []
-    for row in file_content[1::]:
-        employee_id, marking_date, marking_hour = row
-        marking = Marking(
-            employee_id=employee_id,
-            date=marking_date,
-            hour=marking_hour,
-            marking_import=markings_import,
-        )
-        markings.append(marking)
-
-    markings_import.markings_count = len(markings)
-    markings_import.save()
-    Marking.objects.bulk_create(markings)
+    try:
+        markings_import = import_markings_from_csv(file)
+    except Exception as e:
+        return JsonResponse({'error': f'Failed to import CSV: {str(e)}'}, status=HTTPStatus.INTERNAL_SERVER_ERROR)
 
     return JsonResponse({'markings_import': markings_import.to_dict()}, status=HTTPStatus.CREATED)
 
