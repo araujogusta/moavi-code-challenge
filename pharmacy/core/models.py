@@ -9,10 +9,10 @@ class MarkingImport(models.Model):
 
     def to_dict(self):
         return {
-            "id": self.id,
-            "filename": self.filename,
-            "markings_count": self.markings_count,
-            "uploaded_at": self.uploaded_at,
+            'id': self.id,
+            'filename': self.filename,
+            'markings_count': self.markings_count,
+            'uploaded_at': self.uploaded_at,
         }
 
 
@@ -26,9 +26,9 @@ class Marking(models.Model):
 
     def to_dict(self):
         return {
-            "id": self.id,
-            "employee_id": self.employee_id,
-            "date": self.date,
-            "hour": self.hour,
-            "marking_import": self.marking_import.to_dict(),
+            'id': self.id,
+            'employee_id': self.employee_id,
+            'date': self.date,
+            'hour': self.hour,
+            'marking_import': self.marking_import.to_dict(),
         }
